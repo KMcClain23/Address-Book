@@ -23,3 +23,8 @@
 .nav-link:hover {
     color: #ffc107;
 }
+
+.navbar-nav .active > .nav-link {
+    color: #ffc107;
+    font-weight: bold;
+}

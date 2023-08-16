@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-expand-lg bg-primary-subtle" data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('index')}}"><img src="https://res.cloudinary.com/djvpgim4w/image/upload/v1691810365/Bald_Kevin_100x100_rv4ex9.png" alt="Logo" class="logo">Contacts Home</a>
@@ -6,8 +7,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-link {{ 'active' if request.endpoint == 'index'}}" href="{{ url_for('index')}}">Home</a>
-                <a class="nav-link {{ 'active' if request.endpoint == 'contacts'}}" href="{{ url_for('contacts')}}">Contacts</a>
+                <a class="nav-link {{ 'active' if request.endpoint == 'contacts'}}" href="{{ url_for('contacts')}}">Add Contacts</a>
             </div>
         </div>
     </div>
