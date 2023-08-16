@@ -7,8 +7,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
+                <a class="nav-link {{ 'active' if request.endpoint == 'address_book'}}" href="{{ url_for('address_book')}}">Address Book</a>
                 <a class="nav-link {{ 'active' if request.endpoint == 'contacts'}}" href="{{ url_for('contacts')}}">Add Contacts</a>
-                <a class="nav-link {{ 'active' if request.endpoint == 'users'}}" href="{{ url_for('users')}}">Address Book</a>
             </div>
         </div>
     </div>

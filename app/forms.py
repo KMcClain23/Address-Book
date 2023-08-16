@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, EqualTo
-from app.models import User
+from app.models import Address_book
 
 
 class ContactsForm(FlaskForm):
