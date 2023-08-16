@@ -28,3 +28,39 @@
     color: #ffc107;
     font-weight: bold;
 }
+
+.custom-table {
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.custom-table th, .custom-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #1665b4;
+    padding: 10px;
+}
+
+.btn {
+    background-image: linear-gradient(to bottom, #007bff, #0056b3);
+    border-color: #343a40;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn:hover {
+    background-image: linear-gradient(to bottom, #064b95, #82b4e7);
+    color: rgb(0, 0, 0);
+    border-color: aliceblue 2px;
+}
+
+.btn:not(:active) {
+    background-color: #4d8fd3;
+}
+

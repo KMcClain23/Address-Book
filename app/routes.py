@@ -10,6 +10,8 @@ def index():
     countries = ['United States', 'Canada', 'Mexico', 'France', 'Egypt', 'China']
     return render_template('index.html', first_name='David', countries=countries)
 
+# ----------------------------------------------------------------------------------------------------------------
+
 @app.route('/contacts', methods = ["GET", "POST"])
 def contacts():
     form = ContactsForm()
@@ -38,3 +40,10 @@ def contacts():
         return redirect(url_for('index'))
     
     return render_template('contacts.html', form = form)
+
+# ----------------------------------------------------------------------------------------------------------------
+
+@app.route('/users')
+def users():
+    users = User.query.all()
+    return render_template('users.html', users = users)
