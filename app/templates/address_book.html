@@ -23,14 +23,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for user in users %}
+                            {% for contact in address_book %}
                             <tr>
-                                <td>{{ user.id }}</td>
-                                <td>{{ user.first_name|title }}</td>
-                                <td>{{ user.last_name|title }}</td>
-                                <td>{{ user.phone }}</td>
-                                <td>{{ user.address }}</td>
-                                <td>{{ user.date_created.strftime('%y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ contact.id }}</td>
+                                <td>{{ contact.first_name|title }}</td>
+                                <td>{{ contact.last_name|title }}</td>
+                                <td>{{ contact.phone }}</td>
+                                <td>{{ contact.address }}</td>
+                                <td>{{ contact.date_created.strftime('%A %b %d, %Y at %I:%M%p') }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

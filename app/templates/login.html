@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %} Log In {% endblock title %}
+
+{% block header %}
+    <div class = "text-center mt-4">
+        <img src = "https://res.cloudinary.com/djvpgim4w/image/upload/c_thumb,w_100,h_100,g_auto/v1692068089/143557689-cutout-silhouette-burger-outline-icon-of-high-sandwich-black-illustration-of-layered-hamburger_gwsc1s.jpg" alt="Logo" width="80" height="80" class="rounded">
+    </div>
+    <h1 class = "text-center">Log In Here</h1>
+{% endblock header %}
+
+{% block content %}
+<div class = "container">
+    <div class = "row justify-content-center">
+        <div class = "col-md-6">
+            <form method = "post" action="/login" class = "mt-4">
+                {{ form.csrf_token }}
+                <div class = "mb-3">
+                    {{ form.username.label_tag }}
+                    {{ form.username(class='form-control highlight-hover', placeholder='Enter Username') }}
+                </div>
+                <div class = "mb-3">
+                    {{ form.password.label_tag }}
+                    {{ form.password(class='form-control highlight-hover', placeholder='Enter Password') }}
+                </div>
+                <button type = "submit" class = "btn btn-dark w-100 btn-hover">Log In</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

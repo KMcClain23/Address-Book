@@ -1,4 +1,4 @@
-
+<!-- 
 <nav class="navbar navbar-expand-lg bg-primary-subtle" data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('index')}}"><img src="https://res.cloudinary.com/djvpgim4w/image/upload/v1691810365/Bald_Kevin_100x100_rv4ex9.png" alt="Logo" class="logo">Contacts Home</a>
@@ -9,7 +9,43 @@
             <div class="navbar-nav">
                 <a class="nav-link {{ 'active' if request.endpoint == 'address_book'}}" href="{{ url_for('address_book')}}">Address Book</a>
                 <a class="nav-link {{ 'active' if request.endpoint == 'contacts'}}" href="{{ url_for('contacts')}}">Add Contacts</a>
+                <div class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                    <a class="nav-link btn-hover" href="{{ url_for('logout') }}">Log Out</a>
+                    {% else %}
+                    <a class="nav-link btn-hover" href="{{ url_for('signup')}}">Sign Up</a>
+                    <a class="nav-link btn-hover" href="{{ url_for('login')}}">Log In</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
+    </div>
+</nav> -->
+
+<nav class="navbar navbar-expand-lg bg-primary-subtle" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('index')}}"><img src="https://res.cloudinary.com/djvpgim4w/image/upload/v1691810365/Bald_Kevin_100x100_rv4ex9.png" alt="Logo" class="logo">Hackable Addresses</a>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse p-1" id="navbarNavAltMarkup">
+            <div class="navbar-nav p-1">
+                <a class="nav-link px-3 btn-hover" href="{{ url_for('index')}}">Home</a>
+                {% if current_user.is_authenticated %}
+                <a class="nav-link {{ 'active' if request.endpoint == 'address_book'}}" href="{{ url_for('address_book')}}">Address Book</a>
+                <a class="nav-link btn-hover" href="{{ url_for ('contacts') }}" href="{{ url_for('contacts')}}">Add Contacts</a>
+                {% endif %}
+            </div>
+            <div class="navbar-nav ms-auto">
+                {% if current_user.is_authenticated %}
+                <a class="nav-link btn-hover" href="{{ url_for('logout') }}">Log Out</a>
+                {% else %}
+                <a class="nav-link btn-hover" href="{{ url_for('signup') }}">Sign Up</a>
+                <a class="nav-link btn-hover" href="{{ url_for('login') }}">Log In</a>
+                {% endif %}
+            </div>
+        </div>       
     </div>
 </nav>

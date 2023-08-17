@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %} Sign Up {% endblock title %}
+
+{% block header %}
+    <div class="text-center mt-4">
+        <img src="https://res.cloudinary.com/djvpgim4w/image/upload/c_thumb,w_100,h_100,g_auto/v1692068089/143557689-cutout-silhouette-burger-outline-icon-of-high-sandwich-black-illustration-of-layered-hamburger_gwsc1s.jpg" alt="Logo" width = "80" height = "80" class = "rounded">
+    </div>
+    <h1 class = "text-center">Sign Up Here</h1>
+{% endblock header %}
+
+{% block content %}
+<div class = "container">
+    <div class = "row justify-content-center">
+        <div class = "col-md-6">
+            <form action = "" method = "post" class = "mt-4">
+                {{ form.csrf_token }}
+                <div class = "mb-3">
+                    {{ form.username.label_tag }}
+                    {{ form.username(class="form-control highlight-hover", placeholder="Enter Username") }}
+                    {% for error in form.username.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class = "mb-3">
+                    {{ form.email.label_tag }}
+                    {{ form.email(class="form-control highlight-hover", placeholder="Email") }}
+                    {% for error in form.email.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class = "mb-3">
+                    {{ form.password.label_tag }}
+                    {{ form.password(class="form-control highlight-hover", placeholder="Enter Password") }}
+                    {% for error in form.password.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}    
+                </div>
+                <div class = "mb-3">
+                    {{ form.confirm_password.label_tag }}
+                    {{ form.confirm_password(class="form-control highlight-hover", placeholder="Confirm Password") }}
+                    {% for error in form.confirm_password.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}  
+                </div>
+                {{ form.submit(class="btn btn-dark w-100 btn-hover") }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
