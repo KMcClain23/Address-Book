@@ -47,7 +47,7 @@ def contacts():
 
 @app.route('/address_book')
 def address_book():
-    address_book = Address_book.query.order_by(Address_book.id.desc()).all()
+    address_book = Address_book.query.filter_by(username=current_user.username).order_by(Address_book.id.desc()).all()
     return render_template('address_book.html', address_book = address_book)
 
 @app.route('/register', methods=['GET', 'POST'])
