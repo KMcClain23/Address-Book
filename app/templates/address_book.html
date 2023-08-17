@@ -20,6 +20,8 @@
                                 <th>Phone</th>
                                 <th>Address</th>
                                 <th>Date Created</th>
+                                <th>User</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -31,6 +33,7 @@
                                 <td>{{ contact.phone }}</td>
                                 <td>{{ contact.address }}</td>
                                 <td>{{ contact.date_created.strftime('%A %b %d, %Y at %I:%M%p') }}</td>
+                                <td>{{ contact.username }}</td>                                
                             </tr>
                             {% endfor %}
                         </tbody>

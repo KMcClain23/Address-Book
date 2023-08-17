@@ -23,6 +23,7 @@ def contacts():
         last_name = form.last_name.data
         phone = form.phone.data
         address = form.address.data
+        username = current_user.username
 
         existing_contact = db.session.execute(db.select(Address_book).where( (Address_book.first_name==first_name) | (Address_book.phone==phone))).scalar()
         if existing_contact:
@@ -30,7 +31,7 @@ def contacts():
             return redirect(url_for('contacts'))
         
         
-        new_contact = Address_book(first_name = first_name, last_name = last_name, phone = phone, address = address)
+        new_contact = Address_book(first_name = first_name, last_name = last_name, phone = phone, address = address, username = username)
 
         db.session.add(new_contact)
         db.session.commit()
@@ -46,7 +47,7 @@ def contacts():
 
 @app.route('/address_book')
 def address_book():
-    address_book = Address_book.query.all()
+    address_book = Address_book.query.order_by(Address_book.id.desc()).all()
     return render_template('address_book.html', address_book = address_book)
 
 @app.route('/register', methods=['GET', 'POST'])
