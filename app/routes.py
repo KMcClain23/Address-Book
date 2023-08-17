@@ -75,6 +75,8 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
+        flash("You have successfully logged in")
+
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
 
@@ -99,7 +101,6 @@ def signup():
         flash(f'{new_user.username} has been created')
 
         login_user(new_user)      
-
                 # redirect back to the home page
         return redirect(url_for('index'))
     elif form.is_submitted():
