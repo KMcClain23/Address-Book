@@ -13,7 +13,6 @@ class Address_book(db.Model):
     phone = db.Column(db.String(75), nullable=False)
     address = db.Column(db.String(75), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    username = db.Column(db.String(64))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def to_dict(self):
@@ -24,7 +23,6 @@ class Address_book(db.Model):
             'phone': self.phone,
             'address': self.address,
             'date_created': self.date_created,
-            'username': self.username,
             'user_id': self.user_id,
             'user': self.user.to_dict()
         }

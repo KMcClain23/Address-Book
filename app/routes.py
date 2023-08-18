@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import ContactsForm, RegistrationForm, LoginForm
+from app.forms import ContactsForm, RegistrationForm, LoginForm, ContactsForm
 from app.models import Address_book, User, Contact
 
 # Add a route
@@ -25,14 +25,14 @@ def contacts():
         address = form.address.data
         username = current_user.username
 
-        existing_contact = db.session.query(Address_book).filter((Address_book.username == username) & ((Address_book.first_name == first_name) | (Address_book.phone == phone))).first()
+        existing_contact = db.session.query(Address_book).filter((Address_book.user_id == current_user.id) & ((Address_book.first_name == first_name) | (Address_book.phone == phone))).first()
 
         if existing_contact:
             flash("Contact already exists with the same information", "danger")
             return redirect(url_for('contacts'))
         
         
-        new_contact = Address_book(first_name = first_name, last_name = last_name, phone = phone, address = address, username = username)
+        new_contact = Address_book(first_name = first_name, last_name = last_name, phone = phone, address = address, user_id = current_user.id)
 
         db.session.add(new_contact)
         db.session.commit()
@@ -40,7 +40,7 @@ def contacts():
 
         flash("Contact added successfully", "success")
                 # redirect back to the home page
-        return redirect(url_for('index'))
+        return redirect(url_for('address_book'))
     
     return render_template('contacts.html', form = form)
 
@@ -48,8 +48,10 @@ def contacts():
 
 @app.route('/address_book')
 def address_book():
-    address_book = Address_book.query.filter_by(username=current_user.username).order_by(Address_book.id.desc()).all()
+    address_book = current_user.contacts
     return render_template('address_book.html', address_book = address_book)
+
+# ----------------------------------------------------------------------------------------------------------------
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -65,13 +67,15 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
+# ----------------------------------------------------------------------------------------------------------------
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter(User.username.ilike(form.username.data)).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
@@ -117,3 +121,49 @@ def logout():
     logout_user()
     flash("You have successfully logged out")
     return redirect(url_for('index'))
+
+@app.route('/delete_contact/<int:contact_id>', methods = ['POST'])
+@login_required
+def delete_contact(contact_id):
+    contact = Address_book.query.get(contact_id)
+    
+    if contact is None:
+        flash(f"contact with and id of {contact_id} does not exist", 'danger')
+        return redirect (url_for('index'))
+    elif contact.user != current_user:
+        flash("You do not have permission to delete this contact!", 'danger')
+        return redirect (url_for('index'))
+
+    db.session.delete(contact)
+    db.session.commit()
+    flash(f"{contact.first_name} {contact.last_name} has been deleted from your address book.", 'success')
+    return redirect (url_for('address_book'))
+
+
+@app.route('/edit_contact/<int:contact_id>', methods=['GET', 'POST'])
+@login_required
+def edit_contact(contact_id):
+    contact = Address_book.query.get(contact_id)
+
+    if contact is None:
+        flash(f"Contact with an ID of {contact_id} does not exist", 'danger')
+        return redirect(url_for('index'))
+    elif contact.user != current_user:
+        flash("You do not have permission to edit this contact!", 'danger')
+        return redirect(url_for('index'))
+
+    form = ContactsForm(obj=contact)
+
+    if form.validate_on_submit():
+        # Update the contact's information based on the form data
+        contact.first_name = form.first_name.data
+        contact.last_name = form.last_name.data
+        contact.phone = form.phone.data
+        contact.address = form.address.data
+        # Update other fields as needed
+
+        db.session.commit()
+        flash(f"{contact.first_name.title()} {contact.last_name.title()}'s information has been updated.", 'success')
+        return redirect(url_for('address_book'))
+
+    return render_template('edit_contact.html', form=form, contact=contact)

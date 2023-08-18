@@ -71,3 +71,44 @@ def create_contact():
     db.session.commit()
 
     return new_contact.to_dict(), 201
+
+@api.route('/contacts/<contact_id>', methods=['PUT'])
+@token_auth.login_required
+def edit_contact(contact_id):
+    # Check to see that the request body is JSON
+    if not request.is_json:
+        return {'error': 'Your content-type must be application/json'}, 400
+    # Get the contact from db
+    contact = db.session.get(Address_book, contact_id)
+    if contact is None:
+        return {'error': f"Contact with an ID of {contact_id} does not exist"}, 404
+    # Make sure authenticated user is the contact user
+    current_user = token_auth.current_user()
+    if contact.user != current_user:
+        return {'error': 'You do not have permission to edit this contact'}, 403
+    data = request.json
+    for field in data:
+        if field in {'first_name', 'last_name', 'phone', 'address'}:
+            setattr(contact, field, data[field])
+    db.session.commit()
+    return contact.to_dict()
+
+@api.route('/contacts/<contact_id>', methods=["DELETE"])
+@token_auth.login_required
+def delete_contact(contact_id):
+    contact = db.session.get(Address_book, contact_id)
+    if contact is None:
+        return {'error': f'Contact with an ID of {contact_id} does not exist'}, 404
+    current_user = token_auth.current_user()
+    if contact.user != current_user:
+        return {'error': 'You do not have permission to delete this contact'}, 403
+    db.session.delete(contact)
+    db.session.commit()
+    #problem with contact.first_name?
+    return {'success': f"{contact.first_name} has been deleted"}
+
+@api.route('/users/me')
+@token_auth.login_required
+def get_me():
+    me = token_auth.current_user()
+    return me.to_dict()

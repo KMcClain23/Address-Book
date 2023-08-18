@@ -11,7 +11,7 @@
                 <a class="nav-link px-3 btn-hover" href="{{ url_for('index')}}">Home</a>
                 {% if current_user.is_authenticated %}
                 <a class="nav-link {{ 'active' if request.endpoint == 'address_book'}}" href="{{ url_for('address_book')}}">Address Book</a>
-                <a class="nav-link btn-hover" href="{{ url_for ('contacts') }}" href="{{ url_for('contacts')}}">Add Contacts</a>
+                <a class="nav-link btn-hover" href="{{ url_for ('contacts') }}">Add Contacts</a>
                 {% endif %}
             </div>
             <div class="navbar-nav ms-auto">
