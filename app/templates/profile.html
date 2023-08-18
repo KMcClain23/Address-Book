@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %} Profile {% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center mt-5"> {# Add mt-5 to push content down below the nav bar #}
+            <div class="col-md-6">
+                <div class="profile-container">
+                    <section class="profile-section">
+                        <h2 class="profile-heading">User Information</h2>
+                        <div class="profile-info">
+                            <p><strong>Username:</strong> {{ current_user.username.title() }}</p>
+                            <p><strong>Email:</strong> {{ current_user.email }}</p>
+                        </div>
+                    </section>
+                    <section class="profile-section">
+                        <h2 class="profile-heading">Edit Profile</h2>
+                        <form action="{{ url_for('profile') }}" method="POST" class="profile-form">
+                            {{ form.csrf_token }}
+                            <div class="form-group">
+                                <label for="new_username">New Username:</label>
+                                <input type="text" id="new_username" name="new_username" value="{{ form.new_username.data if form.new_username.data != 'None' else '' }}" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new_email">New Email:</label>
+                                <input type="email" id="new_email" name="new_email" value="{{ form.new_email.data if form.new_email.data != 'None' else '' }}" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new_password">New Password:</label>
+                                <input type="password" id="new_password" name="new_password" value="{{ form.new_password.data }}" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary my-2">Save Changes</button>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -112,3 +112,5 @@ def delete_contact(contact_id):
 def get_me():
     me = token_auth.current_user()
     return me.to_dict()
+
+

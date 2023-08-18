@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import ContactsForm, RegistrationForm, LoginForm, ContactsForm
+from app.forms import ContactsForm, RegistrationForm, LoginForm, ContactsForm, ChangeUsernameForm, ChangeEmailForm, ChangeProfileForm
 from app.models import Address_book, User, Contact
 
 # Add a route
@@ -167,3 +167,44 @@ def edit_contact(contact_id):
         return redirect(url_for('address_book'))
 
     return render_template('edit_contact.html', form=form, contact=contact)
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    form = ChangeProfileForm()
+    change_username_form = ChangeUsernameForm()
+    change_email_form = ChangeEmailForm()
+
+    if request.method == 'POST':
+        if change_username_form.validate_on_submit():
+            # Update the username
+            current_user.username = change_username_form.new_username.data
+            db.session.commit()
+            flash('Username updated successfully!', 'success')
+            return redirect(url_for('profile'))
+        
+        if change_email_form.validate_on_submit():
+            # Update the email
+            current_user.email = change_email_form.new_email.data
+            db.session.commit()
+            flash('Email updated successfully!', 'success')
+            return redirect(url_for('profile'))
+
+    return render_template('profile.html', form=form, change_username_form=change_username_form, change_email_form=change_email_form)
+
+
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    change_username_form = ChangeUsernameForm()
+    change_email_form = ChangeEmailForm()
+
+    if change_username_form.validate_on_submit():
+        flash('Username changed successfully.', 'success')
+        return redirect(url_for('settings'))
+
+    if change_email_form.validate_on_submit():
+        flash('Email changed successfully.', 'success')
+        return redirect(url_for('settings'))
+
+    return render_template('settings.html', change_username_form=change_username_form, change_email_form=change_email_form)

@@ -27,4 +27,20 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Log In')
 
+class ChangeUsernameForm(FlaskForm):
+    new_username = StringField('New Username', validators=[DataRequired()])
+    submit = SubmitField('Change Username')
+
+class ChangeEmailForm(FlaskForm):
+    new_email = StringField('New Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Change Email')
+
+class ChangeProfileForm(FlaskForm):
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('new_password')])
+    new_username = StringField('New Username', validators=[DataRequired()])
+    new_email = StringField('New Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Save Changes')
+
 

@@ -8,18 +8,27 @@
         </button>
         <div class="collapse navbar-collapse p-1" id="navbarNavAltMarkup">
             <div class="navbar-nav p-1">
-                <a class="nav-link px-3 btn-hover" href="{{ url_for('index')}}">Home</a>
+                <a class="nav-link px-3 {{ 'active' if request.endpoint == 'index'}}" href="{{ url_for('index')}}">Home</a>
                 {% if current_user.is_authenticated %}
                 <a class="nav-link {{ 'active' if request.endpoint == 'address_book'}}" href="{{ url_for('address_book')}}">Address Book</a>
-                <a class="nav-link btn-hover" href="{{ url_for ('contacts') }}">Add Contacts</a>
+                <a class="nav-link {{ 'active' if request.endpoint == 'contacts'}}" href="{{ url_for ('contacts') }}">Add Contacts</a>
                 {% endif %}
             </div>
             <div class="navbar-nav ms-auto">
                 {% if current_user.is_authenticated %}
-                <a class="nav-link btn-hover" href="{{ url_for('logout') }}">Log Out</a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ current_user.username.title() }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ url_for('logout') }}">Log Out</a>
+                    </div>
+                </div>
                 {% else %}
-                <a class="nav-link btn-hover" href="{{ url_for('signup') }}">Sign Up</a>
-                <a class="nav-link btn-hover" href="{{ url_for('login') }}">Log In</a>
+                <a class="nav-link {{ 'active' if request.endpoint == 'signup'}}" href="{{ url_for('signup') }}">Sign Up</a>
+                <a class="nav-link {{ 'active' if request.endpoint == 'login'}}" href="{{ url_for('login') }}">Log In</a>
                 {% endif %}
             </div>
         </div>       
