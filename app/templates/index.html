@@ -5,7 +5,7 @@
 {% block header %}
 <h1>Welcome to Hackable Addresses</h1>
 {% if current_user.is_authenticated %}
-<h4>Hello {{ current_user.username }}</h4>
+<h4>Hello {{ current_user.username.title() }}</h4>
 {% else %}
 {% endif %}
 {% endblock header %}
