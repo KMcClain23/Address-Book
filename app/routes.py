@@ -25,7 +25,8 @@ def contacts():
         address = form.address.data
         username = current_user.username
 
-        existing_contact = db.session.execute(db.select(Address_book).where( (Address_book.first_name==first_name) | (Address_book.phone==phone))).scalar()
+        existing_contact = db.session.query(Address_book).filter((Address_book.username == username) & ((Address_book.first_name == first_name) | (Address_book.phone == phone))).first()
+
         if existing_contact:
             flash("Contact already exists with the same information", "danger")
             return redirect(url_for('contacts'))
