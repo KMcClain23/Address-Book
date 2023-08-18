@@ -1,8 +1,10 @@
-from app import app, db
-from datetime import datetime
+import os
+import base64
+from app import db, login
+from datetime import datetime, timedelta
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from flask_login import UserMixin
 
 class Address_book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,6 +26,9 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     contacts = db.relationship('Address_book', backref='user', lazy=True)
+    #change These
+    # token = db.Column(db.String(32), index=True, unique=True)
+    # token_expiration = db.Column(db.DateTime)
 
     def get_user(user_id):
         return User.query.get(int(user_id))
@@ -33,6 +38,32 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    #Begin Change
+    def get_token(self, expires_in=3600):
+        now = datetime.utcnow()
+        if self.token and self.token_expiration > now + timedelta(seconds=60):
+            return self.token
+        self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
+        self.token_expiration = now + timedelta(seconds=expires_in)
+        db.session.commit()
+        return self.token
+    
+    def revoke_token(self):
+        self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
+        db.session.commit()
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'username': self.username,
+            'user': self.user.to.dict()
+        }
+    
+    #End Change
 
 class Contact(db.Model):
     __tablename__ = 'contact'

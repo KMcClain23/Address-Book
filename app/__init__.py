@@ -15,11 +15,16 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 
 login.login_view = 'login'
+login.login_message = 'Hey, you need to be logged in to do that!'
+login.login_message_category = 'info'
 
 from app.models import User
 
 @login.user_loader
 def load_user(user_id):
     return User.get_user(user_id)
+
+from app.blueprints.api import api
+app.register_blueprint(api)
 
 from app import routes, models
