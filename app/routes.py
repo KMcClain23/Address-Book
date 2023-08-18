@@ -88,11 +88,12 @@ def signup():
         username = form.username.data
         email = form.email.data
         password = form.password.data
+        
         check_user = db.session.execute(db.select(User).where( (User.username==username) | (User.email==email) )).scalar()
         if check_user:
             flash('A user with that username/password already exists')
             return redirect(url_for('signup'))
-
+        
         new_user = User(username = username, email = email)
         new_user.set_password(password)
 

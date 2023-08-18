@@ -1,6 +1,6 @@
 from . import api
 from app import db
-from app.models import Contact
+from app.models import Contact, Address_book
 from flask import request
 from .auth import basic_auth, token_auth
 
@@ -18,7 +18,7 @@ def get_token():
 
 @api.route('/contacts')
 def get_contacts():
-    contacts = db.session.execute(db.select(Contact)).scalars().all()
+    contacts = db.session.execute(db.select(Address_book)).scalars().all()
     return [contact.to_dict() for contact in contacts]
 
 
@@ -31,7 +31,7 @@ def get_contact(contact_id):
         return {'error': f'Contact with an ID of {contact_id} does not exist'}, 404
 
 
-@api.route('/contacts', methods=["CONTACT"])
+@api.route('/contacts', methods=["POST"])
 @token_auth.login_required
 def create_contact():
     # Check to see that the request body is JSON
@@ -40,7 +40,7 @@ def create_contact():
     # Get the data from the request body
     data = request.json
     # Validate incoming data
-    required_fields = ['title', 'body']
+    required_fields = ['first_name', 'last_name', 'phone', 'address']
     missing_fields = []
     for field in required_fields:
         if field not in data:
@@ -49,13 +49,23 @@ def create_contact():
         return {'error': f"{', '.join(missing_fields)} must be in the request body"}, 400
     
     # Get the data from the body
-    title = data.get('title')
-    body = data.get('body')
-    image_url = data.get('image_url')
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    phone = data.get('phone')
+    address = data.get('address')
+
+    existing_contact_phone = Address_book.query.filter_by(phone=phone).first()
+    existing_contact_address = Address_book.query.filter_by(address=address).first()
+
+    if existing_contact_phone:
+        return {'error': 'A contact with the same phone number already exists'}, 409
+    
+    if existing_contact_address:
+        return {'error': 'A contact with the same address already exists'}, 409
 
     current_user = token_auth.current_user()
     # Create a new Contact instance with the data
-    new_contact = Contact(title=title, body=body, image_url=image_url, user_id=current_user.id)
+    new_contact = Address_book(first_name = first_name, last_name = last_name, phone = phone, address = address, user_id = current_user.id)
     # add to the database
     db.session.add(new_contact)
     db.session.commit()

@@ -16,10 +16,22 @@ class Address_book(db.Model):
     username = db.Column(db.String(64))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'phone': self.phone,
+            'address': self.address,
+            'date_created': self.date_created,
+            'username': self.username,
+            'user_id': self.user_id,
+            'user': self.user.to_dict()
+        }
+
 
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -27,8 +39,8 @@ class User(UserMixin, db.Model):
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     contacts = db.relationship('Address_book', backref='user', lazy=True)
     #change These
-    # token = db.Column(db.String(32), index=True, unique=True)
-    # token_expiration = db.Column(db.DateTime)
+    token = db.Column(db.String(32), index=True, unique=True)
+    token_expiration = db.Column(db.DateTime)
 
     def get_user(user_id):
         return User.query.get(int(user_id))
@@ -56,15 +68,10 @@ class User(UserMixin, db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
             'email': self.email,
             'username': self.username,
-            'user': self.user.to.dict()
         }
     
-    #End Change
-
 class Contact(db.Model):
     __tablename__ = 'contact'
     id = db.Column(db.Integer, primary_key=True)
