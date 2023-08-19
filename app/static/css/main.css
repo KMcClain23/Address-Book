@@ -122,3 +122,11 @@ body {
     align-items: center;
     z-index: 200;
 }
+
+.navbar-profile-image {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+}

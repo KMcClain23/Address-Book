@@ -1,8 +1,14 @@
+import os
+from werkzeug.utils import secure_filename
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import ContactsForm, RegistrationForm, LoginForm, ChangeUsernameForm, ChangeEmailForm, ChangeProfileForm
 from app.models import Address_book, User, Contact
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_FOLDER = os.path.join(basedir, 'UserUploads')
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
 
 # Add a route
 @app.route('/')
@@ -10,6 +16,9 @@ def index():
 
     return render_template('index.html')
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+print(allowed_file('Jimmy.JPG'))
 # ----------------------------------------------------------------------------------------------------------------
 
 @app.route('/contacts', methods = ["GET", "POST"])
@@ -175,7 +184,6 @@ def profile():
     change_email_form = ChangeEmailForm()
 
     if request.method == 'POST':
-
         if change_username_form.validate_on_submit():
             # Update the username
             current_user.username = change_username_form.new_username.data
@@ -188,21 +196,31 @@ def profile():
             db.session.commit()
             flash('Email updated successfully!', 'success')
 
-        if form.validate_on_submit():
-            print("Password form submitted")
-            new_password = form.new_password.data
-            confirm_new_password = form.confirm_new_password.data
+        if 'profile_image' in request.files:
+            file = request.files['profile_image']
+            if file.filename != '':
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    target_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(target_path)  # Save the image to UserUploads folder
+                    current_user.profile_image = filename
+                    db.session.commit()
+                    flash('Profile image updated successfully!', 'success')
+                else:
+                    flash('Invalid file format. Allowed formats: jpg, jpeg, png, gif', 'danger')
 
-            if new_password != confirm_new_password:
+            new_password = form.new_password.data
+            confirm_password = form.confirm_password.data
+
+            if new_password != confirm_password:
                 flash('Passwords do not match. Please confirm your new password correctly.', 'danger')
             else:
                 current_user.set_password(new_password)
                 db.session.commit()
                 flash('Password updated successfully!', 'success')
+                return redirect(url_for('profile'))
 
     return render_template('profile.html', form=form, change_username_form=change_username_form, change_email_form=change_email_form)
-
-
 
 
 @app.route('/settings', methods=['GET', 'POST'])

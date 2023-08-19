@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, FileField
 from wtforms.validators import InputRequired, EqualTo, ValidationError, DataRequired, Email
 from app.models import Address_book
 from flask_login import login_user, logout_user, current_user
@@ -38,10 +38,11 @@ class ChangeEmailForm(FlaskForm):
 class ChangeProfileForm(FlaskForm):
     current_password = PasswordField('Current Password', validators=[DataRequired()])
     new_password = PasswordField('New Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('new_password')])
+    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('new_password', message='Passwords must match')])
     new_username = StringField('New Username', validators=[DataRequired()])
     new_email = StringField('New Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Save Changes')
-    
+    profile_image = FileField('Profile Image')
+    submit = SubmitField('Save Changes')
 
 

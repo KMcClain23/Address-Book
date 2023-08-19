@@ -39,6 +39,7 @@ class User(UserMixin, db.Model):
     #change These
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
+    profile_image = db.Column(db.String(120), default='default.jpg')
 
     def get_user(user_id):
         return User.query.get(int(user_id))
@@ -68,6 +69,7 @@ class User(UserMixin, db.Model):
             'email': self.email,
             'username': self.username,
         }
+    
     
 class Contact(db.Model):
     __tablename__ = 'contact'

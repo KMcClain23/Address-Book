@@ -23,7 +23,7 @@
                             <h2 class="profile-heading m-0">Edit Profile</h2>
                         </div>
                         <div class="card-body">
-                            <form action="{{ url_for('profile') }}" method="POST" class="profile-form">
+                            <form action="{{ url_for('profile') }}" method="POST" class="profile-form" enctype="multipart/form-data">
                                 {{ form.csrf_token }}
                                 <div class="form-group">
                                     <label for="new_username">New Username:</label>
@@ -40,6 +40,10 @@
                                 <div class="form-group">
                                     <label for="confirm_new_password">Confirm New Password:</label>
                                     <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile_image">Profile Image:</label>
+                                    <input type="file" id="profile_image" name="profile_image" class="form-control-file">
                                 </div>
                                 <button type="submit" class="btn btn-primary my-2">Save Changes</button>
                             </form>
