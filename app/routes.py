@@ -184,14 +184,23 @@ def profile():
     change_email_form = ChangeEmailForm()
 
     if request.method == 'POST':
+        new_password = form.new_password.data
+        confirm_password = form.confirm_password.data
+
+        if new_password != confirm_password:
+            flash('Passwords do not match. Please confirm your new password correctly.', 'danger')
+        else:
+            if new_password:  # Only update password if a new one is provided
+                current_user.set_password(new_password)
+                db.session.commit()
+                flash('Password updated successfully!', 'success')
+
         if change_username_form.validate_on_submit():
-            # Update the username
             current_user.username = change_username_form.new_username.data
             db.session.commit()
             flash('Username updated successfully!', 'success')
-        
+
         if change_email_form.validate_on_submit():
-            # Update the email
             current_user.email = change_email_form.new_email.data
             db.session.commit()
             flash('Email updated successfully!', 'success')
@@ -209,18 +218,12 @@ def profile():
                 else:
                     flash('Invalid file format. Allowed formats: jpg, jpeg, png, gif', 'danger')
 
-            new_password = form.new_password.data
-            confirm_password = form.confirm_password.data
-
-            if new_password != confirm_password:
-                flash('Passwords do not match. Please confirm your new password correctly.', 'danger')
-            else:
-                current_user.set_password(new_password)
-                db.session.commit()
-                flash('Password updated successfully!', 'success')
-                return redirect(url_for('profile'))
-
-    return render_template('profile.html', form=form, change_username_form=change_username_form, change_email_form=change_email_form)
+    return render_template(
+        'profile.html',
+        form=form,
+        change_username_form=change_username_form,
+        change_email_form=change_email_form
+    )
 
 
 @app.route('/settings', methods=['GET', 'POST'])
