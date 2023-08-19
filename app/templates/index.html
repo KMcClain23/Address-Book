@@ -5,17 +5,30 @@
 {% block header %}
 <h1>Welcome to Hackable Addresses</h1>
 {% if current_user.is_authenticated %}
-<h4>Hello {{ current_user.username.title() }}</h4>
-{% else %}
+<h4>Hello {{ current_user.username.title() }},</h4>
+<p>Your Personal Address Book Awaits!</p>
 {% endif %}
 {% endblock header %}
 
 {% block content %}
-    <div class="container text-center">
-        <div class="card p-4 m-3 shadow-lg rounded-lg bg-gradient">
-            <h4 class = "card-title text-primary mb-3">Explore the Website</h4>
-            <p class = "card-text">If you would like to view your contact, click below or choose Address Book from the navigation bar at the top.</p>
-            <a href = "{{ url_for('address_book') }}" class = "btn btn-primary btn-lg">Go to Your Address Book</a>
+    <div class="container text-center mt-5">
+        <div class="card p-4 m-3 shadow-lg rounded-lg bg-gradient centered-cards">
+            <h4 class="card-title text-primary mb-3">Explore the Website</h4>
+            {% if current_user.is_authenticated %}
+            <p class="card-text">
+                You're all set to manage your contacts and stay organized. Access your personal address book by clicking the button below or choosing "Address Book" from the navigation bar.
+            </p>
+            <a href="{{ url_for('address_book') }}" class="btn btn-primary btn-lg btn-narrow mx-auto" style="width: 50%;">Go to Your Address Book</a>
+            {% else %}
+            <p class="card-text">
+                Experience the convenience of managing your contacts with Hackable Addresses.<br>
+                To get started, create an account or log in to explore your personal address book.
+            </p>
+            <div class="mx-auto py-2" style="width: 50%;">
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg btn-narrow my-2">Create an Account</a>
+                <a href="{{ url_for('login') }}" class="btn btn-secondary btn-lg btn-narrow my-2">Log In</a>
+            </div>
+            {% endif %}
         </div>
     </div>
 {% endblock content %}

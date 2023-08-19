@@ -34,6 +34,7 @@
     width: 100%;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px
 }
 
 .custom-table th, .custom-table td {
@@ -43,6 +44,19 @@
     vertical-align: middle;
     border: 1px solid #1665b4;
     padding: 10px;
+}
+
+.btn-narrow {
+    width: 50%;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.custom-btn {
+    margin: 0;
 }
 
 .btn {
@@ -62,6 +76,22 @@
 
 .btn:not(:active) {
     background-color: #4d8fd3;
+}
+
+.custom-table .btn.btn-danger {
+    background-image: linear-gradient(to bottom, #dc3545, #c82333);
+    border-color: #dc3545;
+    color: white;
+}
+
+.custom-table .btn.btn-danger:hover {
+    background-image: linear-gradient(to bottom, #bd2130, #b21f2d);
+    border-color: aliceblue 2px;
+    color: rgb(0, 0, 0);
+}
+
+.custom-table .btn.btn-danger:not(:active) {
+    background-color: #c82333;
 }
 
 body {
