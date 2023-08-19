@@ -37,6 +37,10 @@
                                     <label for="new_password">New Password:</label>
                                     <input type="password" id="new_password" name="new_password" value="{{ form.new_password.data }}" class="form-control" required>
                                 </div>
+                                <div class="form-group">
+                                    <label for="confirm_new_password">Confirm New Password:</label>
+                                    <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control" required>
+                                </div>
                                 <button type="submit" class="btn btn-primary my-2">Save Changes</button>
                             </form>
                         </div>
@@ -45,4 +49,17 @@
             </div>
         </div>
     </div>
+    <div class="container text-center mt-5">
+        <div class="card p-2 m-2 shadow-lg rounded-lg bg-gradient mx-auto" style="max-width: 50%;">
+            <h4 class="card-title text-primary mb-2">Go Back</h4>
+            <p class="card-text">Click the button to go back to the previous page.</p>
+            <button class="btn btn-primary btn-lg btn-narrow mx-auto" style="width: 50%;" onclick="goBack()">Go Back</button>
+        </div>
+    </div>
+    
+    <script>
+        function goBack() {
+            history.back();
+        }
+    </script>
 {% endblock content %}

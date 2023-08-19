@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import ContactsForm, RegistrationForm, LoginForm, ContactsForm, ChangeUsernameForm, ChangeEmailForm, ChangeProfileForm
+from app.forms import ContactsForm, RegistrationForm, LoginForm, ChangeUsernameForm, ChangeEmailForm, ChangeProfileForm
 from app.models import Address_book, User, Contact
 
 # Add a route
@@ -63,7 +63,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
+        flash('Congratulations, you are now a registered user!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -77,10 +77,9 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter(User.username.ilike(form.username.data)).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Invalid username or password', 'danger')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        flash("You have successfully logged in")
 
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
@@ -96,7 +95,7 @@ def signup():
         
         check_user = db.session.execute(db.select(User).where( (User.username==username) | (User.email==email) )).scalar()
         if check_user:
-            flash('A user with that username/password already exists')
+            flash('A user with that username/password already exists', 'warning')
             return redirect(url_for('signup'))
         
         new_user = User(username = username, email = email)
@@ -104,13 +103,13 @@ def signup():
 
         db.session.add(new_user)
         db.session.commit()
-        flash(f'{new_user.username} has been created')
+        flash(f'{new_user.username} has been created', 'success')
 
         login_user(new_user)      
                 # redirect back to the home page
         return redirect(url_for('index'))
     elif form.is_submitted():
-        flash("Your passwords do not match")
+        flash("Your passwords do not match", 'warning')
         return redirect(url_for('signup'))
                         
     return render_template('signup.html', form = form)
@@ -119,7 +118,7 @@ def signup():
 @app.route('/logout')
 def logout():
     logout_user()
-    flash("You have successfully logged out")
+    flash("You have successfully logged out", 'success')
     return redirect(url_for('index'))
 
 @app.route('/delete_contact/<int:contact_id>', methods = ['POST'])
@@ -176,21 +175,34 @@ def profile():
     change_email_form = ChangeEmailForm()
 
     if request.method == 'POST':
+
         if change_username_form.validate_on_submit():
             # Update the username
             current_user.username = change_username_form.new_username.data
             db.session.commit()
             flash('Username updated successfully!', 'success')
-            return redirect(url_for('profile'))
         
         if change_email_form.validate_on_submit():
             # Update the email
             current_user.email = change_email_form.new_email.data
             db.session.commit()
             flash('Email updated successfully!', 'success')
-            return redirect(url_for('profile'))
+
+        if form.validate_on_submit():
+            print("Password form submitted")
+            new_password = form.new_password.data
+            confirm_new_password = form.confirm_new_password.data
+
+            if new_password != confirm_new_password:
+                flash('Passwords do not match. Please confirm your new password correctly.', 'danger')
+            else:
+                current_user.set_password(new_password)
+                db.session.commit()
+                flash('Password updated successfully!', 'success')
 
     return render_template('profile.html', form=form, change_username_form=change_username_form, change_email_form=change_email_form)
+
+
 
 
 @app.route('/settings', methods=['GET', 'POST'])

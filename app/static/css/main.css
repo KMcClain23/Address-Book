@@ -1,5 +1,11 @@
 .navbar {
     background-image: linear-gradient(to bottom, #007bff, #0056b3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    
 }
 
 .navbar-brand {
@@ -96,4 +102,23 @@
 
 body {
     padding-top: 70px;
+}
+
+.custom-alert {
+    padding: 10px 20px;
+    font-size: 16px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.custom-alert-container {
+    position: fixed;
+    top: 5%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
 }

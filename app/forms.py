@@ -42,5 +42,6 @@ class ChangeProfileForm(FlaskForm):
     new_username = StringField('New Username', validators=[DataRequired()])
     new_email = StringField('New Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Save Changes')
+    
 
 
