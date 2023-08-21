@@ -7,7 +7,9 @@ from app.forms import ContactsForm, RegistrationForm, LoginForm, EditProfileForm
 from app.models import Address_book, User, Contact
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = os.path.join(basedir, 'UserUploads')
+static_folder = os.path.join(basedir, 'static')
+
+UPLOAD_FOLDER = os.path.join(static_folder, 'UserUploads')
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
 
 # Add a route
@@ -204,8 +206,10 @@ def profile():
         if profile_image:
             if allowed_file(profile_image.filename):
                 filename = secure_filename(profile_image.filename)
-                target_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                profile_image.save(target_path)  # Save the image to UserUploads folder
+                target_path = os.path.join(UPLOAD_FOLDER, filename)
+                if not os.path.exists(UPLOAD_FOLDER):
+                    os.makedirs(UPLOAD_FOLDER)
+                profile_image.save(target_path)
                 current_user.profile_image = filename
                 db.session.commit()
                 flash('Profile image updated successfully!', 'success')
