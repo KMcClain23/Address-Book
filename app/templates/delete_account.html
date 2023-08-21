@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Delete Account</h1>
+    <p>You've got one final chance. Are you doubly sure you want to delete your account?</p>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.password.label }} <br>
+            {{ form.password(size=32) }}
+        </div>
+        <div>
+            {{ form.submit(class="btn btn-danger") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -7,6 +7,7 @@
         <div class="row justify-content-center mt-5">
             <div class="col-md-6">
                 <div class="profile-container">
+                    <img src="{{ url_for('static', filename='UserUploads/' + current_user.profile_image) }}" alt="Profile Image">
                     <div class="card mb-4">
                         <div class="card-header">
                             <h2 class="profile-heading m-0">Current Information</h2>
@@ -27,15 +28,15 @@
                                 {{ form.csrf_token }}
                                 <div class="form-group">
                                     <label for="new_username">New Username:</label>
-                                    <input type="text" id="new_username" name="new_username" value="{{ form.new_username.data if form.new_username.data != 'None' else '' }}" class="form-control" required>
+                                    <input type="text" id="new_username" name="new_username" value="{{ form.new_username.data if form.new_username.data != None else '' }}" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="new_email">New Email:</label>
-                                    <input type="email" id="new_email" name="new_email" value="{{ form.new_email.data if form.new_email.data != 'None' else '' }}" class="form-control" required>
+                                    <input type="email" id="new_email" name="new_email" value="{{ form.new_email.data if form.new_email.data != None else '' }}" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="new_password">New Password:</label>
-                                    <input type="password" id="new_password" name="new_password" value="{{ form.new_password.data }}" class="form-control" required>
+                                    <input type="password" id="new_password" name="new_password" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="confirm_new_password">Confirm New Password:</label>

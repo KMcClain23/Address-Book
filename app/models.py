@@ -36,7 +36,6 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     contacts = db.relationship('Address_book', backref='user', lazy=True)
-    #change These
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     profile_image = db.Column(db.String(120), default='default.jpg')

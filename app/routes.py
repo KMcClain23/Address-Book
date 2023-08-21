@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import ContactsForm, RegistrationForm, LoginForm, ChangeUsernameForm, ChangeEmailForm, ChangeProfileForm
+from app.forms import ContactsForm, RegistrationForm, LoginForm, EditProfileForm, DeleteAccountForm
 from app.models import Address_book, User, Contact
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -32,7 +32,6 @@ def contacts():
         last_name = form.last_name.data
         phone = form.phone.data
         address = form.address.data
-        username = current_user.username
 
         existing_contact = db.session.query(Address_book).filter((Address_book.user_id == current_user.id) & ((Address_book.first_name == first_name) | (Address_book.phone == phone))).first()
 
@@ -59,22 +58,6 @@ def contacts():
 def address_book():
     address_book = current_user.contacts
     return render_template('address_book.html', address_book = address_book)
-
-# ----------------------------------------------------------------------------------------------------------------
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!', 'success')
-        return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
 
 # ----------------------------------------------------------------------------------------------------------------
 
@@ -148,6 +131,25 @@ def delete_contact(contact_id):
     return redirect (url_for('address_book'))
 
 
+@app.route('/delete_account', methods=['GET', 'POST'])
+@login_required
+def delete_account():
+    form = DeleteAccountForm()
+
+    if form.validate_on_submit():
+        if current_user.check_password(form.password.data):
+            user = User.query.get(current_user.id)
+            db.session.delete(user)
+            db.session.commit()
+            logout_user()
+            flash('Your account has been deleted.', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Incorrect password. Account not deleted', 'danger')
+    
+    return render_template('delete_account.html', form=form)
+
+
 @app.route('/edit_contact/<int:contact_id>', methods=['GET', 'POST'])
 @login_required
 def edit_contact(contact_id):
@@ -179,65 +181,44 @@ def edit_contact(contact_id):
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    form = ChangeProfileForm()
-    change_username_form = ChangeUsernameForm()
-    change_email_form = ChangeEmailForm()
-
-    if request.method == 'POST':
+    form = EditProfileForm()
+        
+    if request.method == 'POST' and form.validate_on_submit():
+        new_username = form.new_username.data
+        new_email = form.new_email.data
         new_password = form.new_password.data
         confirm_password = form.confirm_password.data
+        profile_image = form.profile_image.data
 
-        if new_password != confirm_password:
-            flash('Passwords do not match. Please confirm your new password correctly.', 'danger')
-        else:
-            if new_password:  # Only update password if a new one is provided
+        password_update_success = True  # To track password update success
+
+        if new_password:
+            if new_password != confirm_password:
+                flash('Passwords do not match. Please confirm your new password correctly.', 'danger')
+                password_update_success = False
+            else:
                 current_user.set_password(new_password)
                 db.session.commit()
                 flash('Password updated successfully!', 'success')
 
-        if change_username_form.validate_on_submit():
-            current_user.username = change_username_form.new_username.data
-            db.session.commit()
-            flash('Username updated successfully!', 'success')
+        if profile_image:
+            if allowed_file(profile_image.filename):
+                filename = secure_filename(profile_image.filename)
+                target_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                profile_image.save(target_path)  # Save the image to UserUploads folder
+                current_user.profile_image = filename
+                db.session.commit()
+                flash('Profile image updated successfully!', 'success')
+            else:
+                flash('Invalid file format. Allowed formats: jpg, jpeg, png, gif', 'danger')
 
-        if change_email_form.validate_on_submit():
-            current_user.email = change_email_form.new_email.data
-            db.session.commit()
-            flash('Email updated successfully!', 'success')
+        if password_update_success:
+            if new_username != current_user.username or new_email != current_user.email:
+                current_user.username = new_username
+                current_user.email = new_email
+                db.session.commit()
+                flash('Username and Email updated successfully!', 'success')
+        else:
+            print("Password update failed")
 
-        if 'profile_image' in request.files:
-            file = request.files['profile_image']
-            if file.filename != '':
-                if file and allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    target_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    file.save(target_path)  # Save the image to UserUploads folder
-                    current_user.profile_image = filename
-                    db.session.commit()
-                    flash('Profile image updated successfully!', 'success')
-                else:
-                    flash('Invalid file format. Allowed formats: jpg, jpeg, png, gif', 'danger')
-
-    return render_template(
-        'profile.html',
-        form=form,
-        change_username_form=change_username_form,
-        change_email_form=change_email_form
-    )
-
-
-@app.route('/settings', methods=['GET', 'POST'])
-@login_required
-def settings():
-    change_username_form = ChangeUsernameForm()
-    change_email_form = ChangeEmailForm()
-
-    if change_username_form.validate_on_submit():
-        flash('Username changed successfully.', 'success')
-        return redirect(url_for('settings'))
-
-    if change_email_form.validate_on_submit():
-        flash('Email changed successfully.', 'success')
-        return redirect(url_for('settings'))
-
-    return render_template('settings.html', change_username_form=change_username_form, change_email_form=change_email_form)
+    return render_template('profile.html', form=form)
