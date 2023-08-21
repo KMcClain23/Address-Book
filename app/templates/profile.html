@@ -28,23 +28,23 @@
                                 {{ form.csrf_token }}
                                 <div class="form-group">
                                     <label for="new_username">New Username:</label>
-                                    <input type="text" id="new_username" name="new_username" value="{{ form.new_username.data if form.new_username.data != None else '' }}" class="form-control" required>
+                                    {{ form.new_username(class="form-control", value=current_user.username) }}
                                 </div>
                                 <div class="form-group">
                                     <label for="new_email">New Email:</label>
-                                    <input type="email" id="new_email" name="new_email" value="{{ form.new_email.data if form.new_email.data != None else '' }}" class="form-control" required>
+                                    {{form.new_email(class="form-control", value=current_user.email)}}
                                 </div>
                                 <div class="form-group">
                                     <label for="new_password">New Password:</label>
-                                    <input type="password" id="new_password" name="new_password" class="form-control" required>
+                                    {{form.new_password(class="form-control")}}
                                 </div>
                                 <div class="form-group">
                                     <label for="confirm_new_password">Confirm New Password:</label>
-                                    <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control" required>
+                                    {{form.confirm_password(class="form-control")}}
                                 </div>
                                 <div class="form-group">
                                     <label for="profile_image">Profile Image:</label>
-                                    <input type="file" id="profile_image" name="profile_image" class="form-control-file">
+                                    {{form.profile_image(class="form-control")}}
                                 </div>
                                 <button type="submit" class="btn btn-primary my-2">Save Changes</button>
                             </form>
