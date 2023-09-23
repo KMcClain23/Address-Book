@@ -18,7 +18,7 @@
                     {% if current_user.profile_image %}
                         <img src="{{ url_for('static', filename='UserUploads/' + current_user.profile_image) }}" alt="Profile Image" class="navbar-profile-image">
                     {% endif %}
-                 
+                
             <div class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ current_user.username.title() }}
@@ -26,7 +26,7 @@
                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ url_for('delete_account') }}" onclick="return confirm('Are you sure you want to delete your account? This cannot be undone.')">Delete Account</a>"
+                    <a class="dropdown-item" href="{{ url_for('delete_account') }}" onclick="return confirm('Are you sure you want to delete your account? This cannot be undone.')">Delete Account</a>
                     <a class="dropdown-item" href="{{ url_for('logout') }}">Log Out</a>
                 </div>
             </div>
