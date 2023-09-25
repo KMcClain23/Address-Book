@@ -3,7 +3,7 @@
 {% block title %} Home {% endblock title %}
 
 {% block header %}
-<h1>Welcome to Hackable Addresses</h1>
+<h1>Welcome to Unhackable Addresses</h1>
 {% if current_user.is_authenticated %}
 <h4>Hello {{ current_user.username.title() }},</h4>
 <p>Your Personal Address Book Awaits!</p>
@@ -21,7 +21,7 @@
             <a href="{{ url_for('address_book') }}" class="btn btn-primary btn-lg btn-narrow mx-auto" style="width: 50%;">Go to Your Address Book</a>
             {% else %}
             <p class="card-text">
-                Experience the convenience of managing your contacts with Hackable Addresses.<br>
+                Experience the convenience of managing your contacts with Unhackable Addresses.<br>
                 To get started, create an account or log in to explore your personal address book.
             </p>
             <div class="mx-auto py-2" style="width: 50%;">
