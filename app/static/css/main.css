@@ -136,3 +136,7 @@ body {
     height: 100px;
     border-radius: 50%;
 }
+
+.fixed-width-button {
+    width: 200px;
+}
